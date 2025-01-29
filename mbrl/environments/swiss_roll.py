@@ -129,17 +129,17 @@ class SwissRoll(gym.Env):
         assert action.shape == self.action_space.shape
         action = action.astype(np.float32).reshape(-1, 1)
 
-        # Update heatmap
-        state_idx = tuple(
-            np.floor((self._state.flatten() - self.state_space.low) / self.heatmap_steps).astype(np.int32)
-        )
-        self._heatmap[state_idx] += 1
-
         # Check if the state is valid
         valid_state = (
             np.all(self.state_space.low < self._state.flatten()) and np.all(self._state.flatten() < self.state_space.high)
         )
-        terminated = not valid_state
+
+        # Update heatmap
+        if valid_state:
+            state_idx = tuple(
+                np.floor((self._state.flatten() - self.state_space.low) / self.heatmap_steps).astype(np.int32)
+            )
+            self._heatmap[state_idx] += 1
 
         # Calculate reward for current state and action
         if valid_state:
@@ -161,6 +161,7 @@ class SwissRoll(gym.Env):
         
         info = {"state": self._state.copy().flatten()}
         truncated = bool(self._step >= self.horizon)
+        terminated = not valid_state
         reward = reward.item()
         obs = self._get_obs().flatten()
 
