@@ -146,7 +146,7 @@ class SwissRoll(gym.Env):
             reward = -((self._state - self.target).T @ self.Q @ (self._state - self.target)) - (action.T @ self.R @ action)
         else:
             # some big negative reward
-            reward = -1e9
+            reward = np.array([-1e9])
 
         # Calculate Next step
         self._state = self.A @ self._state + self.b + self.B @ action
