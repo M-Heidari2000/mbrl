@@ -6,7 +6,7 @@ setup(
     description="envs and utils for Model Based RL",
     url="https://github.com/M-Heidari2000/mbrl",
     packages=find_packages(),
-    requires=[
+    install_requires=[
         "gymnasium",
         "numpy",
     ],
