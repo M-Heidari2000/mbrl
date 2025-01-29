@@ -8,7 +8,6 @@ setup(
     packages=find_packages(),
     requires=[
         "gymnasium",
-        "'gymnasium[mujoco]'",
         "numpy",
-    ]
+    ],
 )
