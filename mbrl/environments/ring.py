@@ -135,8 +135,18 @@ class Ring(gym.Env):
         )
         self._heatmap[state_idx] += 1
 
+        # Check if the state is valid
+        valid_state = (
+            np.all(self.state_space.low < self._state.flatten()) and np.all(self._state.flatten() < self.state_space.high)
+        )
+        terminated = not valid_state
+
         # Calculate reward for current state and action
-        reward = -((self._state - self.target).T @ self.Q @ (self._state - self.target)) - (action.T @ self.R @ action)
+        if valid_state:
+            reward = -((self._state - self.target).T @ self.Q @ (self._state - self.target)) - (action.T @ self.R @ action)
+        else:
+            # some big negative reward
+            reward = -1e9
 
         # Calculate Next step
         self._state = self.A @ self._state + self.b + self.B @ action
@@ -146,11 +156,6 @@ class Ring(gym.Env):
                 cov=self.Ns,
             ).astype(np.float32).reshape(-1, 1)
             self._state = self._state + ns
-
-        valid_state = (
-            np.all(self.state_space.low < self._state.flatten()) and np.all(self._state.flatten() < self.state_space.high)
-        )
-        terminated = not valid_state
         
         self._step += 1
         
