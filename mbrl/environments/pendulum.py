@@ -69,7 +69,7 @@ class Pendulum(gym.Env):
 
     def reset(self, *args, **kwargs):
         obs, info = self.wrapped_env.reset(*args, **kwargs)
-        info["state"] = self._state
+        info["state"] = self._state.flatten()
         return obs, info
 
     def step(self, *args, **kwargs):
@@ -81,7 +81,7 @@ class Pendulum(gym.Env):
         self._heatmap[state_idx] += 1
 
         obs, reward, terminated, truncated, info = self.wrapped_env.step(*args, **kwargs)
-        info["state"] = self._state
+        info["state"] = self._state.flatten()
         return obs, reward, terminated, truncated, info
 
     def close(self, *args, **kwargs):
