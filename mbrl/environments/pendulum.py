@@ -72,7 +72,7 @@ class Pendulum(gym.Env):
         )
         self._heatmap[state_idx] += 1
 
-        return self.wrapped_env.step(self, *args, **kwargs)
+        return self.wrapped_env.step(*args, **kwargs)
 
     def close(self, *args, **kwargs):
         return self.wrapped_env.close(*args, **kwargs)
