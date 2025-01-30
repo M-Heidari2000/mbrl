@@ -59,16 +59,17 @@ class Pendulum(gym.Env):
         return self.wrapped_env.action_space
 
     @property
-    def state(self):
-        return self.env.state
+    def _state(self):
+        return (self.env.state % np.array([2*np.pi, 1])).reshape(-1, 1)
 
     def reset(self, *args, **kwargs):
         return self.wrapped_env.reset(*args, **kwargs)
     
     def step(self, *args, **kwargs):
+        
         # Update heatmap
         state_idx = tuple(
-            np.floor((self.env.state - self.state_space.low) / self.heatmap_steps).astype(np.int32)
+            np.floor((self._state.flatten() - self.state_space.low) / self.heatmap_steps).astype(np.int32)
         )
         self._heatmap[state_idx] += 1
 
