@@ -48,6 +48,14 @@ class Pendulum(gym.Env):
         return e
     
     @property
+    def observation_space(self):
+        return self.wrapped_env.observation_space
+    
+    @property
+    def action_space(self):
+        return self.wrapped_env.action_space
+
+    @property
     def state(self):
         return self.env.state
 
