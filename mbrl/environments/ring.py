@@ -146,13 +146,12 @@ class Ring(gym.Env):
             ).astype(np.float32).reshape(-1, 1)
             self._state = self._state + ns
         
-        self._step += 1
-
         # Check if the state is valid
         valid_state = (
             np.all(self.state_space.low < self._state.flatten()) and np.all(self._state.flatten() < self.state_space.high)
         )
-
+        
+        self._step += 1
         info = {"state": self._state.copy().flatten()}
         truncated = bool(self._step >= self.horizon)
         terminated = not valid_state
