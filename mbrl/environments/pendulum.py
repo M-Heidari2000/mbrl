@@ -42,6 +42,8 @@ class Pendulum(gym.Env):
             np.ceil((self.state_space.high - self.state_space.low) / self.heatmap_steps).astype(np.int32)+1,
         )
 
+        self.target = np.array([-np.pi, 0.0]).reshape(-1, 1)
+
     def manifold(self, s):
         assert s.shape[0] == 2
         e = np.stack([
