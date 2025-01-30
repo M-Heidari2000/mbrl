@@ -68,8 +68,10 @@ class Pendulum(gym.Env):
         return np.array([th, thdot]).reshape(-1, 1)
 
     def reset(self, *args, **kwargs):
-        return self.wrapped_env.reset(*args, **kwargs)
-    
+        obs, info = self.wrapped_env.reset(*args, **kwargs)
+        info["state"] = self._state
+        return obs, info
+
     def step(self, *args, **kwargs):
         
         # Update heatmap
@@ -78,7 +80,9 @@ class Pendulum(gym.Env):
         )
         self._heatmap[state_idx] += 1
 
-        return self.wrapped_env.step(*args, **kwargs)
+        obs, reward, terminated, truncated, info = self.wrapped_env.step(*args, **kwargs)
+
+        return obs, reward, terminated, truncated, info
 
     def close(self, *args, **kwargs):
         return self.wrapped_env.close(*args, **kwargs)
