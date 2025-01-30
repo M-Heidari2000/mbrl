@@ -1,9 +1,9 @@
 from typing import Optional
 import numpy as np
 import gymnasium as gym
-from gymnasium.wrappers import RescaleAction, TimeLimit
+from gymnasium.wrappers import RescaleAction, TimeLimit, OrderEnforcing
 from gymnasium import spaces
-from gymnasium.envs.classic_control.pendulum import PendulumEnv
+from gymnasium.envs.classic_control.pendulum import PendulumEnv, angle_normalize
 
 
 class Pendulum(gym.Env):
@@ -22,6 +22,8 @@ class Pendulum(gym.Env):
 
         self.wrapped_env = TimeLimit(self.env, max_episode_steps=horizon)
 
+        self.wrapped_env = OrderEnforcing(self.wrapped_env)
+
         self.wrapped_env = RescaleAction(
             env=self.wrapped_env,
             min_action=-1.0,
@@ -29,8 +31,8 @@ class Pendulum(gym.Env):
         )
 
         self.state_space = spaces.Box(
-            low=np.array([0.0, -8.0]),
-            high=np.array([2*np.pi, 8.0]),
+            low=np.array([-np.pi, -8.0]),
+            high=np.array([np.pi, 8.0]),
             shape=(2, ),
             dtype=np.float32,
         )
@@ -39,7 +41,6 @@ class Pendulum(gym.Env):
         self._heatmap = np.zeros(
             np.ceil((self.state_space.high - self.state_space.low) / self.heatmap_steps).astype(np.int32)+1,
         )
-        self.target = np.array([0.0, 0.0]).reshape(-1, 1)
 
     def manifold(s):
         assert s.shape[0] == 2
@@ -60,7 +61,9 @@ class Pendulum(gym.Env):
 
     @property
     def _state(self):
-        return (self.env.state % np.array([2*np.pi, 1])).reshape(-1, 1)
+        th, thdot = self.env.state
+        th = angle_normalize(th)
+        return np.array([th, thdot]).reshape(-1, 1)
 
     def reset(self, *args, **kwargs):
         return self.wrapped_env.reset(*args, **kwargs)
