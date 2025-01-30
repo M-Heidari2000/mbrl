@@ -81,7 +81,7 @@ class Pendulum(gym.Env):
         self._heatmap[state_idx] += 1
 
         obs, reward, terminated, truncated, info = self.wrapped_env.step(*args, **kwargs)
-
+        info["state"] = self._state
         return obs, reward, terminated, truncated, info
 
     def close(self, *args, **kwargs):
