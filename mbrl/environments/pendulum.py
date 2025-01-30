@@ -1,8 +1,9 @@
 from typing import Optional
 import numpy as np
 import gymnasium as gym
-from gymnasium.wrappers import RescaleAction
+from gymnasium.wrappers import RescaleAction, TimeLimit
 from gymnasium import spaces
+from gymnasium.envs.classic_control.pendulum import PendulumEnv
 
 
 class Pendulum(gym.Env):
@@ -10,17 +11,19 @@ class Pendulum(gym.Env):
     def __init__(
         self,
         render_mode: Optional[str]=None,
+        horizon: int=100,
         g: float=10.0,
         heatmap_steps: float=0.1,
     ):
-        self.env = gym.make(
-            "Pendulum-v1",
+        self.env = PendulumEnv(
             render_mode=render_mode,
             g=g,
         )
 
+        self.wrapped_env = TimeLimit(self.env, max_episode_steps=horizon)
+
         self.wrapped_env = RescaleAction(
-            env=self.env,
+            env=self.wrapped_env,
             min_action=-1.0,
             max_action=1.0,
         )
