@@ -1,5 +1,7 @@
 from typing import Optional
 import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
 import gymnasium as gym
 from gymnasium.wrappers import RescaleAction, TimeLimit, OrderEnforcing
 from gymnasium import spaces
@@ -93,6 +95,17 @@ class Pendulum(gym.Env):
     def reset_heatmap(self):
         self._heatmap = self._heatmap * 0
 
-    def get_heatmap(self):
-        return self._heatmap
-
+    def show_heatmap(self, cmap: Optional[str]=None):
+        h = self._heatmap.T[::-1]
+        y, x = h.shape
+        x_low, y_low = np.round(self.state_space.low, 2)
+        x_hi, y_hi = np.round(self.state_space.high, 2)
+        ax = sns.heatmap(
+            h,
+            xticklabels=[str(x_low)] + [None]*(x-2) + [str(x_hi)],
+            yticklabels=[str(y_hi)] + [None]*(y-2) + [str(y_low)],
+            cmap=cmap,
+        )
+        ax.set_xlabel("angle")
+        ax.set_ylabel("angular velocity")
+        plt.show()
