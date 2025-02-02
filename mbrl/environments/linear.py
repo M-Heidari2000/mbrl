@@ -173,7 +173,7 @@ class Linear(gym.Env):
             x=s,
             height=self._heatmap,
             width=self.heatmap_steps,
-            edgecolor="#a1c9f4",
-            facecolor="black",
+            edgecolor="black",
+            facecolor="#a1c9f4",
         )
         plt.show()
