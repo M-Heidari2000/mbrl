@@ -108,4 +108,5 @@ class Pendulum(gym.Env):
         )
         ax.set_xlabel("angle")
         ax.set_ylabel("angular velocity")
+        ax.set_title("collected data")
         plt.show()

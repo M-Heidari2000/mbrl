@@ -178,4 +178,5 @@ class Linear(gym.Env):
         )
         plt.xlabel("s")
         plt.ylabel("count")
+        plt.title("collected data")
         plt.show()

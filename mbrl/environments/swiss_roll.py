@@ -183,4 +183,5 @@ class SwissRoll(gym.Env):
         )
         ax.set_xlabel("s[0]")
         ax.set_ylabel("s[1]")
+        ax.set_title("collected data")
         plt.show()
