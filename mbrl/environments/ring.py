@@ -55,7 +55,7 @@ class Ring(gym.Env):
 
         self.state_space = spaces.Box(
             low=np.array([0]),
-            high=np.array([2*np.pi-1e-3]),
+            high=np.array([2*np.pi]),
             shape=(1, ),
             dtype=np.float32,
         )
