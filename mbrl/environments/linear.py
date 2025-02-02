@@ -176,4 +176,6 @@ class Linear(gym.Env):
             edgecolor="black",
             facecolor="#a1c9f4",
         )
+        plt.xlabel("s")
+        plt.ylabel("count")
         plt.show()
