@@ -1,6 +1,7 @@
 import gymnasium as gym
 from gymnasium import spaces
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 class Ring(gym.Env):
@@ -77,7 +78,7 @@ class Ring(gym.Env):
 
         self.heatmap_steps = heatmap_steps
         self._heatmap = np.zeros(
-            np.ceil((self.state_space.high - self.state_space.low) / self.heatmap_steps).astype(np.int32),
+            np.ceil((self.state_space.high - self.state_space.low) / self.heatmap_steps).astype(np.int32) + 1,
         )
 
     def manifold(self, s):
@@ -166,5 +167,19 @@ class Ring(gym.Env):
     def reset_heatmap(self):
         self._heatmap = self._heatmap * 0
 
-    def get_heatmap(self):
-        return self._heatmap
+    def show_heatmap(self):
+        s = np.arange(
+            self.state_space.low.item(),
+            self.state_space.high.item() + self.heatmap_steps,
+            self.heatmap_steps,
+        )
+        plt.bar(
+            x=s,
+            height=self._heatmap,
+            width=self.heatmap_steps,
+            edgecolor="black",
+            facecolor="#a1c9f4",
+        )
+        plt.xlabel("s")
+        plt.ylabel("count")
+        plt.show()
