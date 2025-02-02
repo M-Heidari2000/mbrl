@@ -1,6 +1,9 @@
 import gymnasium as gym
 from gymnasium import spaces
 import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+from typing import Optional
 
 
 class SwissRoll(gym.Env):
@@ -54,7 +57,7 @@ class SwissRoll(gym.Env):
 
         self.state_space = spaces.Box(
             low=np.array([0, -4.0]),
-            high=np.array([2*np.pi, 4.0-1e-3]),
+            high=np.array([2*np.pi, 4.0]),
             shape=(2, ),
             dtype=np.float32,
         )
@@ -77,7 +80,7 @@ class SwissRoll(gym.Env):
 
         self.heatmap_steps = heatmap_steps
         self._heatmap = np.zeros(
-            np.ceil((self.state_space.high - self.state_space.low) / self.heatmap_steps).astype(np.int32),
+            np.ceil((self.state_space.high - self.state_space.low) / self.heatmap_steps).astype(np.int32) + 1,
         )
 
     def manifold(self, s):
@@ -167,6 +170,17 @@ class SwissRoll(gym.Env):
     def reset_heatmap(self):
         self._heatmap = self._heatmap * 0
 
-    def get_heatmap(self):
-        heatmap = self._heatmap.T[::-1, :]
-        return heatmap
+    def show_heatmap(self, cmap: Optional[str]=None):
+        h = self._heatmap.T[::-1]
+        y, x = h.shape
+        x_low, y_low = np.round(self.state_space.low, 2)
+        x_hi, y_hi = np.round(self.state_space.high, 2)
+        ax = sns.heatmap(
+            h,
+            xticklabels=[str(x_low)] + [None]*(x-2) + [str(x_hi)],
+            yticklabels=[str(y_hi)] + [None]*(y-2) + [str(y_low)],
+            cmap=cmap,
+        )
+        ax.set_xlabel("s[0]")
+        ax.set_ylabel("s[1]")
+        plt.show()
