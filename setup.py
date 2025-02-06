@@ -9,5 +9,7 @@ setup(
     install_requires=[
         "gymnasium",
         "numpy",
+        "matplotlib",
+        "seaborn",
     ],
 )
