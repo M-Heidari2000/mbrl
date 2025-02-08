@@ -39,6 +39,8 @@ class Pendulum(gym.Env):
             dtype=np.float32,
         )
 
+        self.horizon = horizon
+
         self.heatmap_steps = heatmap_steps
         self._heatmap = np.zeros(
             np.ceil((self.state_space.high - self.state_space.low) / self.heatmap_steps).astype(np.int32)+1,
