@@ -125,11 +125,17 @@ class Linear(gym.Env):
         assert action.shape == self.action_space.shape
         action = action.astype(np.float32).reshape(-1, 1)
 
-        # Update heatmap
-        state_idx = tuple(
-            np.floor((self._state.flatten() - self.state_space.low) / self.heatmap_steps).astype(np.int32)
+        # Check if the state is valid
+        valid_state = (
+            np.all(self.state_space.low < self._state.flatten()) and np.all(self._state.flatten() < self.state_space.high)
         )
-        self._heatmap[state_idx] += 1
+
+        if valid_state:
+            # Update heatmap
+            state_idx = tuple(
+                np.floor((self._state.flatten() - self.state_space.low) / self.heatmap_steps).astype(np.int32)
+            )
+            self._heatmap[state_idx] += 1
 
         # Calculate reward for current state and action
         reward = -((self._state - self.target).T @ self.Q @ (self._state - self.target)) - (action.T @ self.R @ action)
@@ -143,15 +149,10 @@ class Linear(gym.Env):
             ).astype(np.float32).reshape(-1, 1)
             self._state = self._state + ns
 
-        # Check if the state is valid
-        valid_state = (
-            np.all(self.state_space.low < self._state.flatten()) and np.all(self._state.flatten() < self.state_space.high)
-        )
-
         self._step += 1        
         info = {"state": self._state.copy().flatten()}
         truncated = bool(self._step >= self.horizon)
-        terminated = not valid_state
+        terminated = False
         reward = reward.item()
         obs = self._get_obs().flatten()
 
