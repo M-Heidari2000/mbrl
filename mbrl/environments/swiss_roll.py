@@ -159,7 +159,7 @@ class SwissRoll(gym.Env):
         self._step += 1
         info = {"state": self._state.copy().flatten()}
         truncated = bool(self._step >= self.horizon)
-        terminated = not valid_state
+        terminated = False
         reward = reward.item()
         obs = self._get_obs().flatten()
 
