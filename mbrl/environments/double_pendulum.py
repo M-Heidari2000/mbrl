@@ -31,6 +31,8 @@ class DoublePendulum(gym.Env):
             dtype=np.float32
         )
 
+        self.action_space = self.wrapped_env.action_space
+
     def reset(self, *args, **kwargs):
         obs, info = self.wrapped_env.reset(*args, **kwargs)
         self.target = obs[[4, 5]]
