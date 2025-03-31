@@ -33,16 +33,22 @@ class DoublePendulum(gym.Env):
 
         self.action_space = self.wrapped_env.action_space
 
+    def _process_obs(self, obs):
+        obs[[8, 9]] = obs[[8, 9]] + obs[[4, 5]]
+        obs = obs[[0, 1, 2, 3, 6, 7, 8, 9]]
+        return obs
+
     def reset(self, *args, **kwargs):
         obs, info = self.wrapped_env.reset(*args, **kwargs)
-        self.target = obs[[4, 5]]
-        obs[[8, 9]] = obs[[8, 9]] + self.target
-        obs = obs[[0, 1, 2, 3, 6, 7, 8, 9]]
-        
+        self.target = obs[[4, 5]].copy()
+        obs = self._process_obs(obs)
         return obs, info
 
     def step(self, *args, **kwargs):
-        return self.wrapped_env.step(*args, **kwargs)
+        obs, reward, terminated, truncated, info= self.wrapped_env.step(*args, **kwargs)
+        obs = self._process_obs(obs)
+
+        return obs, reward, terminated, truncated, info
 
     def close(self, *args, **kwargs):
         return self.wrapped_env.close(*args, **kwargs)
