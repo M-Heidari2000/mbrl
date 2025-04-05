@@ -5,7 +5,7 @@ from gymnasium.wrappers import DtypeObservation
 from gymnasium import spaces
 
 
-class DoublePendulum(gym.Env):
+class Reacher(gym.Env):
 
     def __init__(
         self,
